@@ -1,4 +1,4 @@
-const functions = require('firebase-functions');
+const functions = require("firebase-functions");
 
 // The Firebase Admin SDK to access Cloud Firestore.
 const admin = require("firebase-admin");
@@ -21,23 +21,23 @@ exports.addMessage = functions.https.onRequest(async (req, res) => {
     // Grab the text parameter.
     const original = req.query.text;
     // Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    const writeResult = await admin.firestore().collection('message').add({original: original});
+    const writeResult = await admin.firestore().collection("message").add({original: original});
 
 
-    await admin.firestore().collection('offer').doc("wBA2DdeQrLfGHZw2dFHw").update({"interestedUsers": ["As", "sd"]});
+    await admin.firestore().collection("offer").doc("wBA2DdeQrLfGHZw2dFHw").update({"interestedUsers": ["As", "sd"]});
 
 
     // Send back a message that we've succesfully written the message
     res.json({result: `Message with ID: ${writeResult.id} added.`});
 });
 
-exports.makeLowercase = functions.firestore.document('/message/{documentId}')
+exports.makeLowercase = functions.firestore.document("/message/{documentId}")
     .onCreate((snap, context) => {
         // Grab the current value of what was written to Cloud Firestore.
         const original = snap.data().original;
 
         // Access the parameter `{documentId}` with `context.params`
-        console.log('Lowercasing', context.params.documentId, original);
+        console.log("Lowercasing", context.params.documentId, original);
 
         const lowercase = original.toLowerCase();
 
@@ -47,11 +47,11 @@ exports.makeLowercase = functions.firestore.document('/message/{documentId}')
         return snap.ref.set({lowercase}, {merge: true});
     });
 
-exports.sendMessageNotification = functions.firestore.document('/conversation/{convID}/message/{messageID}')
+exports.sendMessageNotification = functions.firestore.document("/conversation/{convID}/message/{messageID}")
     .onCreate((snapshot, context) => {
         const message = snapshot.data()
         console.log("message: ", message);
-        return admin.firestore().collection('conversation').doc("" + message.conversationID).get().then(snap => {
+        return admin.firestore().collection("conversation").doc("" + message.conversationID).get().then(snap => {
             let sender
             let receiver
             for (const participant of snap.data().participants) {
@@ -61,7 +61,7 @@ exports.sendMessageNotification = functions.firestore.document('/conversation/{c
                     receiver = participant
                 }
             }
-            return admin.firestore().collection('profile').doc("" + receiver.id).get().then(snap => {
+            return admin.firestore().collection("profile").doc("" + receiver.id).get().then(snap => {
                 const token = snap.data().deviceToken;
                 console.log("token: ", token);
 

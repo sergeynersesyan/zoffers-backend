@@ -15,5 +15,8 @@
     "morgan": "~1.9.1",
     "parser": "^0.1.4",
     "pug": "2.0.0-beta11"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0"
   }
 }
